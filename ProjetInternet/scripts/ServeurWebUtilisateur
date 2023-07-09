@@ -1,0 +1,5 @@
+#!/bin/bash
+
+ip link set dev eth0 up 
+
+service apache2 start

@@ -1,0 +1,79 @@
+network:
+  name: ProjetInternet
+  version: 0.1
+  hosts:
+    - UE1
+      mode : netns
+      init : ./scripts/UE1
+ 
+    - ServeurWebUtilisateur
+      mode : docker
+      image : apache_n7:latest
+      files : ./files/ServeurWebUtilisateur/var:/
+ 
+    - UE2
+      mode : netns
+      init : ./scripts/UE2
+ 
+    - BOX1
+      mode : docker
+      image : dhcp_n7:latest
+      files : ./files/BOX1/etc:/
+ 
+    - BOX2
+      mode : docker
+      image : dhcp_n7:latest
+      files : ./files/BOX2/etc:/
+ 
+    - FAIacces
+      mode : docker
+      image : quagga_n7:latest
+      files : ./files/FAIacces/etc:/
+ 
+    - R1
+      mode : docker
+      image : quagga_n7:latest
+      files : ./files/R1/etc:/
+ 
+    - R2
+      mode : docker
+      image : quagga_n7:latest
+      files : ./files/R2/etc:/
+ 
+ 
+ 
+ 
+    - FAIservice
+      mode : docker
+      image : quagga_n7:latest
+      files : ./files/FAIservice/etc:/
+ 
+ 
+    - ServeurWeb
+      mode : docker
+      image : apache_n7:latest
+      files : ./files/ServeurWeb/var:/
+ 
+    - DNS
+      mode : docker
+      image : dns_n7:latest
+      files : ./files/DNS/etc:/
+ 
+ 
+  links :
+    - UE2:eth0!BOX2:eth0
+ 
+  bridges:
+    - Switch0
+      interfaces: FAIacces:eth0!BOX2:eth1!BOX1:eth1!
+    - Switch1
+      interfaces: R1:eth0!R2:eth0!FAIacces:eth1!
+    - Switch2
+      interfaces: FAIservice:eth0!R1:eth1!R2:eth1!
+    - Switch3
+      interfaces: ServeurWeb:eth0!DNS:eth0!FAIservice:eth1!
+    - Switch4
+      interfaces: BOX1:eth0!UE1:eth0!ServeurWebUtilisateur:eth0!
+ 
+  consoles :
+    - all
