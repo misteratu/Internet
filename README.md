@@ -1,3 +1,3 @@
 # Internet
 
-![Diagramme Internet](Diagramme_internet.png)
+![Diagramme Internet](Diagramme internet.png)
